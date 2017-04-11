@@ -1,0 +1,47 @@
+global       
+        log 127.0.0.1 local2
+        daemon
+        maxconn 256
+        log 127.0.0.1 local2 info
+defaults
+        log global
+        mode http
+        timeout connect 5000ms
+        timeout client 50000ms
+        timeout server 50000ms
+        option  dontlognull
+
+listen stats :8888
+        stats enable
+        stats uri       /admin
+        stats auth      admin:1234
+
+frontend oldboy.org
+        bind 0.0.0.0:80
+        option httplog
+        option httpclose
+        option  forwardfor
+        log global
+        acl www hdr_reg(host) -i www.oldboy.org
+        use_backend www.oldboy.org if www
+
+backend www.oldboy.org
+        server 192.168.100.100 192.168.100.100 weight 20 maxconn 3000
+
+backend www.baidu.org
+        server 192.168.100.111 192.168.100.111 weight 20 maxconn 3000
+        server 192.168.100.101 192.168.100.101 weight 200 maxconn 3000
+        server 192.168.100.102 192.168.100.102 weight 20 maxconn 3000
+        server 192.168.100.103 192.168.100.103 weight 20 maxconn 3000
+        server 192.168.100.104 192.168.100.104 weight 20 maxconn 3000
+
+backend www.sina.org
+        server 192.168.100.105 192.168.100.105 weight 20 maxconn 3000
+        server 192.168.100.106 192.168.100.106 weight 20 maxconn 3000
+        server 192.168.100.107 192.168.100.107 weight 20 maxconn 3000
+        server 192.168.100.108 192.168.100.108 weight 20 maxconn 3000
+
+
+
+backend www.xxx.org 
+        server 192.168.100.102 192.168.100.102 weight 20 maxconn 3000
